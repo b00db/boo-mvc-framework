@@ -1,0 +1,11 @@
+.metadata
+.settings
+.project
+.classpath
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+build/
+.gitattributes
