@@ -33,15 +33,11 @@ public class DispatcherServlet extends HttpServlet {
 			
 			// 페이지 컨트롤러에게 전달할 Map 객체를 준비한다.
 			HashMap<String, Object> model = new HashMap<String, Object>();
-			model.put("memberDao", sc.getAttribute("memberDao"));
 			model.put("session", request.getSession());
 			
-			Controller pageController = null;
+			Controller pageController = (Controller) sc.getAttribute(servletPath);
 			
-			if("/member/list.do".equals(servletPath)) {
-				pageController = new MemberListController();
-			} else if("/member/add.do".equals(servletPath)) {
-				pageController = new MemberAddController();
+			if("/member/add.do".equals(servletPath)) {
 				if(request.getParameter("email") != null) {
 					model.put("member", new Member()
 							.setEmail(request.getParameter("email"))
@@ -49,7 +45,6 @@ public class DispatcherServlet extends HttpServlet {
 							.setName(request.getParameter("name")));
 				}
 			} else if("/member/update.do".equals(servletPath)) {
-				pageController = new MemberUpdateController();
 				if(request.getParameter("email") != null) {
 					model.put("member", new Member()
 							.setNo(Integer.parseInt(request.getParameter("no")))
@@ -59,17 +54,13 @@ public class DispatcherServlet extends HttpServlet {
 			        model.put("no", new Integer(request.getParameter("no")));
 		        }
 			} else if("/member/delete.do".equals(servletPath)) {
-				pageController = new MemberDeleteController();
 		        model.put("no", new Integer(request.getParameter("no")));
 			} else if("/auth/login.do".equals(servletPath)) {
-				pageController = new LogInController();
 		        if (request.getParameter("email") != null) {
 		          model.put("loginInfo", new Member()
 		            .setEmail(request.getParameter("email"))
 		            .setPassword(request.getParameter("password")));
 		        }
-			} else if("/auth/logout.do".equals(servletPath)) {
-				pageController = new LogOutController();
 			}
 			
 			// 페이지 컨트롤러를 실행한다.
