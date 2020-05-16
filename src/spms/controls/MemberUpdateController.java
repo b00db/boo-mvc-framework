@@ -2,10 +2,11 @@ package spms.controls;
 
 import java.util.Map;
 
+import spms.bind.DataBinding;
 import spms.dao.MemberDao;
 import spms.vo.Member;
 
-public class MemberUpdateController implements Controller {
+public class MemberUpdateController implements Controller, DataBinding {
 	MemberDao memberDao;
 	  
 	public MemberUpdateController setMemberDao(MemberDao memberDao) {
@@ -13,16 +14,24 @@ public class MemberUpdateController implements Controller {
 		return this;
 	}
 
+	public Object[] getDataBinders() {
+		return new Object[] {
+				"no", Integer.class,
+				"member", spms.vo.Member.class
+		};
+	}
+	
 	@Override
 	public String execute(Map<String, Object> model) throws Exception {
-	    if (model.get("member") == null) { 	// 수정폼을 요청할 떄
+		Member member = (Member)model.get("member");
+		
+	    if (member.getEmail() == null) { 	// 수정폼을 요청할 떄
 	      Integer no = (Integer)model.get("no");
-	      Member member = memberDao.selectOne(no);
-	      model.put("member", member);
+	      Member detailInfo = memberDao.selectOne(no);
+	      model.put("member", detailInfo);
 	      return "/member/MemberUpdateForm.jsp";
 
 	    } else { 	// 회원 수정을 요청할 때
-	      Member member = (Member)model.get("member");
 	      memberDao.update(member);
 	      return "redirect:list.do";
 	    }
